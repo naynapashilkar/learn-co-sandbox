@@ -1,70 +1,55 @@
-$(document).ready(function(){
- 
- function listenForClicksOnCells(){
-   $(".cell").click(markCell) //logs the cell that was clicked
- }
- 
-listenForClicksOnCells()  
- 
- var MARK = "X"
- let numberTiles = 0
- 
- function markCell(){
-   //check whether or not the cell has been marked already so you cant remark it
-   if (this.innerText === ""){
-     this.innerText = MARK
-      if (playerWon(MARK)===true) {
-      console.log(MARK + " won the game")
-      resetGame()
+// API Related Globals
+const APIKEY = "your api key here!"
+const BASE = "https://api.giphy.com"
+const SEARCH = BASE + "/v1/gifs/search"
+
+// TODO: make sure to have a reference to your gallery DOM element so we can add newly
+// created <img> elements to it!
+
+// this array will hold the urls of the gifs we get back from Giphy. 
+// it is currently populated with placeholder gifs.
+// TODO: make sure to clear this array of placeholders out before adding more gifs.  Otherwise, you'll always have three cats at the beginning!
+let gifURLs = [
+  "https://www.tipeeestream.com/bundles/widget/images/animation/default.gif",
+  "https://www.tipeeestream.com/bundles/widget/images/animation/default.gif",
+  "https://www.tipeeestream.com/bundles/widget/images/animation/default.gif"
+]
+
+function renderGallery() {
+  // this function should replace the existing DOM gallery with newly created gif <img> dom elements
+  
+  const styleWidth = (100.0/gifURLs.length).toString() + "%" // make sure to assign this width to your newly created <img> element so they can dynamically size no matter how many GIFs you are rendering!
+  
+  // TODO: generate your GIFs <img> dom elements with jquery
+  
+  // TODO: populate the gallery with the elements so they display in the browser
+}
+  
+function getGifURL(query, idx) {
+  $.ajax({
+    url: SEARCH,
+    dataType: "json",
+    data: {
+      api_key: "02650f4ff4fe6c9e668c17819e0d2343", 
+      q: query, 
+      limit: 1, 
+      rating: "PG-13" 
+    },
+    success: (resp) => {
+      const url = resp.data[0].images.original.url // as an example, this would grab the url we need from the first gif returned (if the limit is set to 1, there will only be a single result)
+      // TODO: use the info that our ajax request has successfully returned from Giphy. We recommending invoking another function here which can make use of the urls
     }
-     xOro()
-     numberTiles++
-   }
- }
- 
- //alternates between x and o on each click
- function xOro(){
-       if (MARK == "X"){
-     MARK = "O"
-     console.log(MARK)
-   }
-   else if (MARK == "O"){
-     MARK = "X"
-   }
- }
-     
- // takes in a DOM id and checks whether its text is equal to the second argument (mark)
-function elementContains(id, mark) {
-  return $(id).text() === mark
+  })
 }
-
-// to be run after each turn. checks whether a given mark ('X'/'O') populates all three spots in any given win combination
-function playerWon(mark) {
-  for (var idx = 0; idx < winArr.length; idx++) { // for every win combination
-    var winCombo = winArr[idx]
-    var won = winCombo.every(id => elementContains(id, mark)) // check if elementContains returns true for every id
-    if (won) {return true}
-  }
-  return false // if we got here, it means no winning combination was found and we can safely return false
-}  
-
-function resetGame() {
-  MARK = "X"
-  numberTiles = 0
-  $('.cell').text("")
+  
+function handleSubmit() {
+  // TODO: use the value from the input field $("#query-input") to make our ajax request
+  
+  // TODO: if multiple keywords are provided, we should make multiple ajax requests!
 }
- 
-})
-
-
-var winArr = [
-   ["#0-0","#1-0","#2-0"],
-   ["#0-1","#1-1","#2-1"],
-   ["#0-2","#1-2","#2-2"],
-   ["#0-0","#0-1","#0-2"],
-   ["#1-0","#1-1","#1-2"],
-   ["#2-0","#2-1","#2-2"],
-   ["#0-0","#1-1","#2-2"],
-   ["#0-2","#1-1","#2-0"]
-   
-   ]
+  
+// this jQuery method waits for the document to finish loading before invoking its callback
+$( document ).ready(() => {
+  renderGallery() // renders the placeholders
+  // TODO: we need to make sure our "#search-button" has a 'click' event listener attached to it. See: https://api.jquery.com/click/
+});
